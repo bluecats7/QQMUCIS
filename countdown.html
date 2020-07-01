@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="css/reset.min.css">
+    <style>
+        .timeBox {
+            margin: 20px auto;
+            height: 50px;
+            width: 300px;
+            text-align: center;
+            line-height: 50px;
+            font-size: 20px;
+            border: 1px dashed lightblue;
+        }
+
+        .timeBox span {
+            font-weight: bolder;
+            color: red;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="timeBox"> 距离抢购还有 <span>00:00</span></div>
+
+</body>
+
+<script>
+    /*
+    js中也开业获取事件：new Date();获取的使客户段时间，这个时间客户端可以随时修改
+    所以在项目中，如果时间作为重要的参考标准，需要使用服务器的时间
+     */
+    let timeBox = document.querySelector('.timeBox'),
+        timeSpan = timeBox.querySelector('span'),
+        _serverTime = null;
+    let computedTime = function () {
+        /* z这样处理也有一个问题：每一个客户端每间隔一秒都会向服务器发送一个新的
+        请求，这样下去访问用户多，服务器就暴炸了（超过负载均衡）
+        解决方案：创建一个全局变量，记录一次从后台获取的服务器时间，每一秒刷新的时候
+        都是在第一次的基础上一直累加，而不是重新从服务器获取（减轻服务器的压力
+         */
+        let promise = queryTime();
+        if (promise instanceof Promise) {
+            promise.then(serverTime => {
+                fu(serverTime);
+            })
+
+        } else {
+            fu(promise)
+        }
+    }
+
+    queryTime = function () {
+        //从服务端获取时间会存在一些问题：由于服务端返回需要时间，所以客户端拿到
+        //返回的服务时间的时候，已经过去一会儿了，导致获取的时间和真实的事件一定误差
+        //为了减少误差在ajax为2的时候就冲响应头获取信息，而不是等到更靠后的状态4 
+        //2在请求方式设置为head：只获取响应头信息即可
+        //3即使我发送一个不存在的地址，返回的是404状态码，但是响应头信息也可以获取
+        //第一次向服务器发送请求：把结果放到全局变量了
+        //第二次执行queryTime用之前记录的全局变量值，但是需要把这给值
+        //手动累加一秒
+        if (_serverTime) {
+            _serverTime = new Date(_serverTime.getTime() + 1000)
+            return _serverTime;
+        }
+        return new Promise(resolve => {
+            /* 这里必须放一步的操作，new promise是同步的，如果放的
+            不是异步的就会立马执行了，会报错，new promise是管理异步的方法 */
+            let xhr = new XMLHttpRequest();
+            xhr.open('get', './a.json');
+            xhr.onreadystatechange = () => {
+                if (xhr.readyState === 2) {
+                    //&& /^(2|3)d{2}$/.test(xhr.status)
+                    let serverTime = new Date(xhr.getResponseHeader('date'));
+                    _serverTime = serverTime;
+                    resolve(serverTime);
+                }
+            }
+            xhr.send(null);
+        })
+    }
+
+    let fu = function (promise) {
+        let tarTime = new Date('2020/04/23 06:00:00');
+        let nowTime = new Date(promise);
+        let diffTime = tarTime - nowTime;
+
+        //获取目标时间和当前时间的差值,结果是两个时间的的毫秒差
+        /* new Date('时间字符串') 把指定的时间字符串转换为标准时间数据，时间字符串支持很多
+        列如 xxxx/xx/xx xx/xx/xx  xxxx-xx-xx xx:xx:xx
+             */
+
+        //计算出毫秒差的时分秒  
+        if (diffTime >= 0) {
+            let Time = diffTime;
+            let hours = Math.floor(Time / (1000 * 60 * 60));
+            //求出减去小时之后还有多少毫秒
+            Time = Time - (hours * 3600000);
+            ////求出分钟
+            let minutes = Math.floor(Time / (1000 * 60));
+            //求出减去分钟之后还有多少毫秒
+            Time = Time - minutes * 60000;
+            let seconds = Math.floor(Time / 1000);
+
+            hours < 10 ? hours = '0' + hours : null;
+            minutes < 10 ? minutes = '0' + minutes : null;
+            seconds < 10 ? seconds = '0' + seconds : null;
+            timeSpan.innerText = `${hours}:${minutes}:${seconds}`
+            return;
+        } else {
+            //已经到了抢购时间了，大于目标时间了
+            timeSpan.innerText = '00:00:00'
+            clearInterval(auto);
+            return;
+        }
+    }
+    /*  let fun = function () {
+          console.log(a);
+          // error  a is not defined
+      }
+      // fun();
+      let a = 1; */
+    /*定时器是异步的所以auto这个变量在哪里都可以拿到  */
+    let auto = setInterval(computedTime, 1000);
+</script>
+
+</html>

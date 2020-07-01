@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+</body>
+<script>
+    /* 创建Ajax实列 */
+    let xhr = new XMLHttpRequest();
+    xhr.open('./11.json', 'get')
+    xhr.setRequestHeader('zhufeng', 'zf')/* 设置的请求头不能设置出现中文和特殊字符 */
+    //必须要放到open的后面
+    xhr.onreadystatechange = () => {
+        if (xhr.readyState === 400 && xhr.status == 200) {
+            /* if (！/^(2|3)\d{2}$/.test(xhr.status)) {
+                正则以2或者3开头的
+                return; 
+            } */
+            //到这里证明服务器已经返回内容了，
+            // if(xhr.readyState ===2 )  let date=xhr.getRequestHeader('date') 
+            // new Date(date) 设置为北京时间，data是格林尼制时间
+        }
+    }
+    xhr.send()
+//打开请求
+//xhr.open([http method url async user-name,user-pass])
+//请求放肆 get delete head option trace connect post
+    /* URL向服务器端发送请求的API（Application program interface
+    3 async 设置ajax请求的同步异步编程，防止阻塞
+    user-name、user-pass 一般不用
+    4 监听：一般监听都是ready-state-change事件 （ajax状态改变事件）
+    基于对这个时间可以获取服务器返回的响应头响应主体内容
+    xhr.onreadystatechange=()=>{
+        if(xhr.readystate===4&& xhr.statestatus ===200){
+
+        }
+    }
+    5.发送阿加西请求：从这部开始，当前阿加西任务开始，如果ajax是同步的
+    后续代码不会执行，要等到ajax状态成功在执行，反正异步的不会
+    xhr.send(请求主体，内容)
+
+
+    3.关于http请求
+    所有请求可以给服务器传递内容，也可以从服务器获取内容
+    get: 获取数据（给的少拿得多）
+    post：发送数据（相反）
+    delete：删除服务器端的某些内容（一半删除文件）
+    put: 向服务器上存放一些内容（一般也是存放文件）
+    head：只想回去服务器返回的响应头信息，不要想赢主体的的内容
+    options:一般使用它向服务器发送探测性请求。
+    说明当前客户端和服务器端建立了连接，我们可以执行其他请求
+    trace也是干这个事情的但是axios这个ajax类库在基于crossdomain进行跨域请求
+    的时候，就是先发送options请求进行探测尝试，睿哥能连接服务器，才会继续发送其他请求
+
+    4 get vs post
+    get是基于URL地址问号船餐的方式把信息传递给服务器，
+    post是基于把请求主体把信息传递给服务器
+    get: open('get',"https://wwax...")
+     send(null)
+    post: open('post')
+     send('xxx=xxx&xxx=xxx')
+     get一般应用于拿（给服务器的会少一些），而post给服务器的很多，如果post是基于问号
+     传递方式来搞会出现一些问题：URL会很长，浏览器对于URL的长度有很大限制（谷歌8kb
+     火狐7kb ie2kb)超过的部分浏览器就把他截掉了=》所以get请求可以基于URL传参
+     而post都是使用请求主体传递（请求这主体理论上是没有限制的，真实项目中我们
+     会自己做大小限制）
+
+     get不安全 ，post相对安全
+     因为get是基于问号传参把信息传递给服务器的，容易进行URL劫持，
+     post是基于请求主体传递的，相对来说不好劫持：所以登录、注册等涉及交互
+     操作，我们都应该用post求情：
+
+     get会产生不可控制的缓存，post不会
+     不可控：不是想要就要，想不要就不要的，就是浏览器自主记忆的缓存，我们无法给予给js
+     控制真实项目中我们会把这些缓存干掉
+     get请求残生缓存是因为：连续多次向相同的地址（并且传递的参数信息也是相同的）
+     发送请求，浏览器会把之前获取的数据缓存返回导致无法获取最新的数据
+
+     解决方法
+     xhr.open('get',/temp/list?lx=1000&_=${Math.random()});
+     保证每次请求地址不完全一样：每一次请求的某位追加一个随机数（使用——中文属性
+     名就是不想和其他的属性名冲突）
+     5，ajax状态
+    0 unsend 刚开始创建XHR，还没有发送
+    1 opened  已经执行了open这个操作
+    2 headers_prceived  以及发送ajax请求（ajax任务开始)，响应头信息被客户
+    端接收了（响应头主体内容真在返回
+    3 loading 响应主体内容正在返回
+    4 done  响应组题内容已经被客户端接收
+
+    http网络状态码status
+    根据状态码能够清楚反映出当前交互的结果原因
+    200 ok 成功（只能证明服务器成功返回信息了，但是信息不一定业务成功）
+    301 Move permanently 永久转移
+    域名更改，访问原始域名转移到新域名
+    302 move temporarily 临时转移（临时从定向=》307）
+    一般用于服务器的负载均衡:当一台服务器达到最大并发数的时候，会把后续访问的用回
+    临时转移到其他的服务器机组上处理
+    偶尔真实项目中会把所有的图片放到单独的服务器上‘图片处理服务器“，这样减少
+    主服务器的压力，当用户向服务器访问图片的时候，主服务器都把他转移到图片服务器上处理
+
+    304 not Modified 设置缓存
+    对于不经常更新的资源文件，例如CSS/js/Html/Img、服务器会结合客户端设置304
+    缓存，第一次加载这些资源就缓存到了客户端，下次在获取的时候，是从缓存
+    中获取：如果资源更新了，服务器端会通过最后修改的时间来强制让客户端从服务器从新拉去：
+    基于Ctrl+F5强制刷新页面，304桌的缓存就没有用了
+
+    400 bad request
+    401 unauthorized 无法授权
+    404 not found
+    413 request entity too large 和服务器交互的资源超过服务器最大限制
+
+    500 internal Server Error 未知服务器错误‘
+    503 sever unavailable 服务器超负荷
+
+    关于xhr的属性和方法
+    xhr.response 响应主体
+    xhr。responseText 响应主体是字符串
+    xhr.responseXml 相应主体是xml文档
+    xhr.status 返回http状态码
+    xhr.statusText 状态码的描述
+    xhr.timeout设置请求超时的时间（设置一个时间，超出事件就超时了）
+    xhr.ontimeout = ()=>{
+        console.log('请求超时')
+    }
+    xhr.onabort=()=>{
+        console.log('强中断请求')
+    }
+    xhr.getAllResponseHeaders()
+    xhr.getresponseHeader(key)获取key响应头对应的信息列如 xhr
+    xhr.open()打开URL请求
+    xhr.overrideMimeType()重写Mine类型
+    xhr.send()发送请求
+    xhr.setRequestHeader()设置请求头
+    xhr.withCredentials 是否允许跨域
+
+
+     */
+</script>
+
+</html>

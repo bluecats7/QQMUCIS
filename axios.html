@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+</body>
+<script src="./node_modules/axios/dist/axios.min.js">
+    /* 他一个类库，基于promise管理的ajax库 
+    1.提供了对应请求方式和方法列如get、post、head、delete。put、options
+    axios.get()向服务器发送一个请求，基于的方式是get方式
+    2.支持的参数配置
+    axios.get(url,option)
+    3基于get或者post发的请求，返回的结果都是promise的实列
+
+
+
+    */
+    axios.get('https://www.easy-mock.com/mock/5b0412beda8a195fb0978627/temp/info', {
+        params: {
+            /* params:get请求中，会把param中的键值对拼接成urlencode格式的字符串
+            然后问号传参的方式，传递给服务器，类似于jq-ajax中的data */
+            name: 'zhangsna',
+            age: 13
+        }
+    })
+
+    axios.post('https://www.easy-mock.com/mock/5b0412beda8a195fb0978627/temp/add', {
+        params: {
+            /* 配置相中传递的内容都是相当于基于主体传递给服务器，但是传递给服务器的内容
+            格式是raw json格式的字符串 不是x-www-form-urlencode*/
+            name: 'zhangsna',
+            age: 13
+        }
+    })
+
+    let promise = axios.get('https://www.easy-mock.com/mock/5b0412beda8a195fb0978627/temp/info')
+    promise.then(res => {
+        console.log(res);
+        //data:从服务器获取的响应主体内容
+        /* 
+        request：ajax的实列
+        header：从服务器返回的响应头
+        status：状态码
+        statusText：状态码的描述
+        config：基于axios发送的时候做的配置项
+        */
+    })
+</script>
+
+</html>

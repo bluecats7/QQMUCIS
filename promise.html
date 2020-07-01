@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+</body>
+<script src="./node_modules/jquery/dist/jquery.min.js"></script>
+<script>
+    /*
+    promise是ES6中新增的内置类，目的是为了管理里异步操作的
+    1 new Promise() 创建一个实列，每一个实列都可以管理一个异步操作
+    必须传一个回调函数，否则报错他是用来管理你的异步操作的
+    回调函数中会有两个参数
+    resovle：异步操作成功做的事情（指代成功后的事件队列=》成功后要做的所有事情都放在成功这个事件队列中）
+    reject：异步炒作失败的事情（一样
+    new promise 的时候立即把这个回调函数执行了（promise是同步的
+    2.基于promise.protototype.then的方法还有catch finally两个方法
+    想成功队列和失败队列以此假如需要处理的事情
+
+    3如果是多个then调用，不是我们想象那样，一次吧怎加方法执行
+    异步操作成功或者失败，先把第一个then中的方法执行，没执行一个then
+    会返回一个新的promise的实列，这个实列管控的是第一个then执行的成功还是失败
+
+    */
+    let promise1 = new Promise((resolve, reject) => {
+        $.ajax({
+            url: './json/lyric.json',
+            dataType: 'JSON',
+            success(result) {
+                resolve(result)
+            },
+            error(msg) {
+                reject(msg)
+            }
+        })
+    });
+
+    promise1.then(
+        result => {
+            console.log(result)
+        }).catch(msg => {
+            //第一个catch
+            /*1,。异步请求失败会执行他
+            2. 第一个then方法失败也会执行他 
+             */
+        }).then(res => {
+
+        }).catch(errmsg => {
+
+        })
+</script>
+
+</html>

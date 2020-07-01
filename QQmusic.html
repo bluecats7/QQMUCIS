@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet/less" href="./css/reset.less">
+    <link rel="stylesheet/less" href="./index.less">
+    <script src="./js/less-2.5.3.min.js"></script>
+    <script src="./js/prefixfree.min.js"></script>
+    <title>Document</title>
+    <script>
+        ~(function anonymous() {
+            let computedREM = function () {
+                let HTML = document.documentElement,
+                    winH = HTML.clientWidth,
+                    des = 640;
+                if (winH >= des) {
+                    return;
+                }
+                document.documentElement.style.fontSize = winH / des * 100 + 'px'
+            }
+            computedREM();
+            window.addEventListener('resize', computedREM);
+        })(window);
+    </script>
+</head>
+
+<body>
+    <main class="mainBox">
+        <img src="./img/myDream.jpg" class="backgroundImg" alt="">
+        <div class="backgroundMark"></div>
+        <audio src="./img/myDream.m4a" preload="none" id="musicAudio"></audio>
+        <!-- header -->
+        <header class="headerBox">
+            <img src="./img/myDream.jpg" class="pic" alt="">
+            <div class="title">
+                <h1>我的梦-MY Dream</h1>
+                <h2>张靓颖</h2>
+            </div>
+            <a href="javascript:; " class="playBtn"></a>
+        </header>
+        <!-- content -->
+        <section class="contentBox">
+            <div class="wrapper">
+                <p>我的梦（华为手机主题曲）- 张靓颖</p>
+
+            </div>
+        </section>
+        <!--footer  -->
+        <footer class="footerBox">
+            <div class="progressBox">
+                <span class="already">00:00</span>
+                <div class="progress">
+                    <div class="run"></div>
+                </div>
+                <span class="duration">00:00</span>
+            </div>
+            <a href="javascript:;" class="download">下载此音乐</a>
+        </footer>
+    </main>
+</body>
+<script src="./js/zepto.min.js"></script>
+<script src="./js/index2.js"></script>
+
+</html>

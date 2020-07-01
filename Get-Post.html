@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+</body>
+<script>
+
+    let xhr = new XMLHttpRequest();
+    /* xhr.open('get',
+        'https://www.easy-mock.com/mock/5b0412beda8a195fb0978627/temp/list?id=1000&lx=2000') */
+    xhr.open('post', 'https://www.easy-mock.com/mock/5b0412beda8a195fb0978627/temp/list')
+    xhr.onreadystatechange = () => {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            /* 监听的是ajax状态改变事件，设置监听之前有一个状态当
+            后续的状态和设置之前的状态不相同，才会触发这个事件 */
+            console.log(JSON.parse(xhr.responseText))
+        }
+
+    }
+    /* 请求主体传递给服务的是json字符串，但是真实项目常用的是URL-encode格式的字符串
+    例如 id=1000&lx=2000
+     */
+    xhr.send(JSON.stringify({ 'ax': 'ax', lo: ' lo' }));
+    //xhr.send(null) 才开始发送ajax请求，这个方法执行才证明ajax任务开始
+
+
+    /* 
+    当设置我同步编程false的时候
+    当ajax开始任务，主任务队列在状态
+     */
+</script>
+
+</html>

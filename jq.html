@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<script src="./ajax.js">
+    //$.get /$.post /$getJSON /$.getScript最常用的是$.ajax
+    /* 
+    url:请求的API地址’
+    method：请求的方式
+    data：传递给服务器的信息可以放到data中
+    如果是get是基于问号传参
+    如果是post态请求主体
+    data的值可以是对象也可可以是字符串（一般常用于对象）
+    data是对象类型，jq会把对象转换为xxx=xxx&xxx=xxx 的模式
+    x-www-form-urlencodeed 
+    如果是字符串传的是什么就是什么
+    data-type：预设置 获取的结果的数据格式 text json jsonp HTML xml script
+    服务器返回给客户端的响应主体内容一半是json格式居多，设置data-type=json
+     jq会把内部获取的字符串转为json格式的对象=>'不会影响服务器返回的结果，只会把返回的结果二次处理'
+    async 设置同步或者异步：true是异步 false是同步
+    cache;设置get请求是否建立缓存（默认是true）建立缓存false是不建立缓存
+    当我没设置，兵器当前请求是get请求，jq会在请求的地址URL设置一个随机的数字（时间戳）
+    success回调函数当成功回调此函数，jq执行回调函数的时候会把响应主体获取的结果
+    可能二次处理了当做参数传递给回调函数
+
+
+
+     */
+    ajax({
+        url: 'https://www.easy-mock.com/mock/5b0412beda8a195fb0978627/temp/list?lx=12',
+        method: 'GET',
+        data: {
+            name: '周啸天',
+            age: 28
+        },
+        cache: false,
+        success: (result, xhr) => {
+            console.log(result);
+        },
+        error: (result, xhr) => {
+            console.log(result);
+        }
+    });
+
+
+
+</script>
+
+<body>
+
+
+
+
+</body>
+
+</html>
